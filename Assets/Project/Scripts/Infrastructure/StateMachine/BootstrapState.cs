@@ -24,7 +24,7 @@ namespace Project.Scripts.Infrastructure.StateMachine
 
         private void EnterLoadLevel()
         {
-            _stateMachine.Enter<LoadLevelState>();
+            _stateMachine.Enter<LoadLevelState, string>("Main");
         }
 
         public void Exit()

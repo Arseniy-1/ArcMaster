@@ -1,7 +1,7 @@
 ﻿namespace Project.Scripts.Infrastructure.StateMachine
 {
-    public interface IState : IExitableState
+    public interface IExitableState
     {
-        void Enter();
+        void Exit();
     }
 }
