@@ -1,24 +1,18 @@
-﻿using Project.Scripts.Services.Input;
-using UnityEngine;
-using Application = UnityEngine.Device.Application;
+﻿using Project.Scripts.Infrastructure.StateMachine;
+using Project.Scripts.Services.Input;
+using Unity.VisualScripting;
 
 namespace Project.Scripts.Infrastructure
 {
     public class Game
     {
+        public GameStateMachine StateMachine;
+        
         public static IInputService InputService;
 
-        public Game()
+        public Game(ICoroutineRunner coroutineRunner)
         {
-            RegisterInputService();
-        }
-
-        private static void RegisterInputService()
-        {
-            if (Application.isEditor)
-                InputService = new StandaloneInputService();
-            else
-                InputService = new MobileInputService();
+            StateMachine = new GameStateMachine(new SceneLoader(coroutineRunner));
         }
     }
 }

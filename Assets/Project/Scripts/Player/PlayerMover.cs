@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Project.Scripts.Player
 {
     public class PlayerMover : MonoBehaviour
-    {
+    { 
         private IInputService _inputService;
         private Camera _camera;
         
