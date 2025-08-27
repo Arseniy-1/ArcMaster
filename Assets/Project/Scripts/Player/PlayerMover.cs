@@ -1,5 +1,6 @@
 ﻿using System;
 using Project.Scripts.Infrastructure;
+using Project.Scripts.Services;
 using Project.Scripts.Services.Input;
 using UnityEngine;
 
@@ -13,10 +14,14 @@ namespace Project.Scripts.Player
         public CharacterController CharacterController;
         public float MovementSpeed;
 
+        private void Awake()
+        {
+            _inputService = AllServices.Container.Single<IInputService>();
+        }
+        
         private void Start()
         {
             _camera = Camera.main;
-            _inputService = Game.InputService;
         }
 
         private void Update()

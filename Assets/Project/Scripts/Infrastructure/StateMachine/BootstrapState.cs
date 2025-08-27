@@ -1,4 +1,7 @@
-﻿using Project.Scripts.Services.Input;
+﻿using Project.Scripts.Infrastructure.AssetManagement;
+using Project.Scripts.Infrastructure.Factory;
+using Project.Scripts.Services;
+using Project.Scripts.Services.Input;
 using UnityEngine;
 
 namespace Project.Scripts.Infrastructure.StateMachine
@@ -9,17 +12,26 @@ namespace Project.Scripts.Infrastructure.StateMachine
         
         private readonly GameStateMachine _stateMachine;
         private readonly SceneLoader _sceneLoader;
+        private readonly AllServices _services;
 
-        public BootstrapState(GameStateMachine stateMachine, SceneLoader sceneLoader)
+        public BootstrapState(GameStateMachine stateMachine, SceneLoader sceneLoader, AllServices services)
         {
             _stateMachine = stateMachine;
             _sceneLoader = sceneLoader;
+            _services = services;
+            RegisterServices();
         }
 
         public void Enter()
         {
-            Game.InputService = SetupInputService();
             _sceneLoader.Load(Initial, EnterLoadLevel);
+        }
+
+        private void RegisterServices()
+        {
+            _services.Register<IInputService>(GetInputService( ));
+            _services.Register<IAssetProvider>(new AssetProvider());
+            _services.Register<IGameFactory>(new GameFactory(_services.Single<IAssetProvider>()));
         }
 
         private void EnterLoadLevel()
@@ -32,7 +44,7 @@ namespace Project.Scripts.Infrastructure.StateMachine
             
         }
 
-        private static IInputService SetupInputService()
+        private static IInputService GetInputService()
         {
             if (Application.isEditor)
                 return new StandaloneInputService();
