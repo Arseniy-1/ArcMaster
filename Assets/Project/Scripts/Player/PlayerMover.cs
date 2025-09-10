@@ -1,6 +1,4 @@
-﻿using System;
-using Project.Scripts.Infrastructure;
-using Project.Scripts.Services;
+﻿using Project.Scripts.Services;
 using Project.Scripts.Services.Input;
 using UnityEngine;
 

@@ -1,6 +1,4 @@
-﻿using Project.Scripts.Infrastructure.Factory;
-
-namespace Project.Scripts.Services
+﻿namespace Project.Scripts.Services
 {
     public class AllServices
     {
