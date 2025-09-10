@@ -16,20 +16,13 @@ namespace Project.Scripts.Tests.EditMode
         [Test]
         public void NewTestScriptSimplePasses()
         {
-            bool missingComponentsDetected = false;
+            var errors = 
+                from scene in OpenAllProjectScenes() 
+                from gameObject in AllGameObjects(scene) 
+                where HasMissingScript(gameObject) 
+                select $"GameObject {gameObject.name} from scene {scene.name} has a missing components";
 
-            foreach (var scene in OpenAllProjectScenes())
-            foreach (var gameObject in AllGameObjects(scene))
-            {
-                if (HasMissingScript(gameObject))
-                {
-                    missingComponentsDetected = true;
-                    Logger.LogError("🤷‍♂️",
-                        $"GameObject {gameObject.name} from scene {scene.name} has a missing components");
-                }
-            }
-
-            Assert.That(missingComponentsDetected, Is.True);
+            Assert.That(errors, Is.Empty);
         }
 
         static bool HasMissingScript(GameObject gameObject) =>
