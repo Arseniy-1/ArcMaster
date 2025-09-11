@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -11,10 +11,8 @@ namespace Project.Scripts.Tests.EditMode
 {
     public class ValidationTest
     {
-        private static ILogger Logger => Debug.unityLogger;
-
         [Test]
-        public void NewTestScriptSimplePasses()
+        public void AllGameObjectsShouldNotHaveMissingScripts()
         {
             var errors = 
                 from scene in OpenAllProjectScenes() 
@@ -22,7 +20,7 @@ namespace Project.Scripts.Tests.EditMode
                 where HasMissingScript(gameObject) 
                 select $"GameObject {gameObject.name} from scene {scene.name} has a missing components";
 
-            Assert.That(errors, Is.Empty);
+            errors.Should().BeEmpty();
         }
 
         static bool HasMissingScript(GameObject gameObject) =>
