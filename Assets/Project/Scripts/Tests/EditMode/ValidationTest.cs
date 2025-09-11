@@ -19,7 +19,8 @@ namespace Project.Scripts.Tests.EditMode
             var gameObjectsWithMissingScripts =
                 AllGameObjects(scene)
                     .Where(HasMissingScript)
-                    .Select(gameObject => gameObject.name)
+                    .GroupBy(gameObject => gameObject.name)
+                    .Select(grouping => $"{grouping.Key} ({grouping.Count()})")
                     .ToList();
 
             EditorSceneManager.CloseScene(scene, true);
