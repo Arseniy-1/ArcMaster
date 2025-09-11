@@ -11,43 +11,30 @@ namespace Project.Scripts.Tests.EditMode
 {
     public class ValidationTest
     {
-        [Test]
-        public void AllGameObjectsShouldNotHaveMissingScripts()
+        [TestCaseSource(nameof(AllScenePaths))]
+        public void AllGameObjectsShouldNotHaveMissingScripts(string scenePath)
         {
-            var errors = 
-                from scene in OpenAllProjectScenes() 
-                from gameObject in AllGameObjects(scene) 
-                where HasMissingScript(gameObject) 
-                select $"GameObject {gameObject.name} from scene {scene.name} has a missing components";
+            var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
 
-            errors.Should().BeEmpty();
+            var gameObjectsWithMissingScripts =
+                AllGameObjects(scene)
+                    .Where(HasMissingScript)
+                    .Select(gameObject => gameObject.name)
+                    .ToList();
+
+            EditorSceneManager.CloseScene(scene, true);
+
+            gameObjectsWithMissingScripts.Should().BeEmpty();
         }
 
         static bool HasMissingScript(GameObject gameObject) =>
             GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(gameObject) > 0;
 
-        private static IEnumerable<Scene> OpenAllProjectScenes()
+        private static IEnumerable<string> AllScenePaths()
         {
-            var scenePaths = AssetDatabase
+            return AssetDatabase
                 .FindAssets("t:Scene", new[] { "Assets" })
                 .Select(AssetDatabase.GUIDToAssetPath);
-
-            foreach (var scenePath in scenePaths)
-            {
-                Scene scene = SceneManager.GetSceneByPath(scenePath);
-
-                if (scene.isLoaded)
-                {
-                    yield return scene;
-                }
-
-                else
-                {
-                    var openedScene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
-                    yield return openedScene;
-                    EditorSceneManager.CloseScene(openedScene, true);
-                }
-            }
         }
 
         private static IEnumerable<GameObject> AllGameObjects(Scene scene)
